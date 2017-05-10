@@ -1,0 +1,14 @@
+[package]
+name = "waffles-sandbox"
+version = "0.1.0"
+authors = ["Matthew Johnston <warmwaffles@gmail.com>"]
+
+[dependencies]
+log = "*"
+env_logger = "*"
+quick-error = "*"
+
+gfx = "*"
+gfx_window_glutin = "*"
+glutin = "*"
+nalgebra = "*"
