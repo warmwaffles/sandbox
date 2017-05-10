@@ -19,7 +19,7 @@ gfx_defines! {
     }
 
     constant Transform {
-        view: [[f32; 4]; 4] = "u_view",
+        view:       [[f32; 4]; 4] = "u_view",
         projection: [[f32; 4]; 4] = "u_projection",
     }
 
@@ -45,7 +45,6 @@ pub fn main() {
         .with_title("Triangle example".to_string())
         .with_dimensions(1024, 768)
         .with_vsync();
-
 
     let (window, mut device, mut factory, main_color, mut main_depth) =
         gfx_window_glutin::init::<ColorFormat, DepthFormat>(builder, &events_loop);
