@@ -19,8 +19,7 @@ gfx_defines! {
     }
 
     constant Transform {
-        view:       [[f32; 4]; 4] = "u_view",
-        projection: [[f32; 4]; 4] = "u_projection",
+        combined: [[f32; 4]; 4] = "u_combined",
     }
 
     pipeline pipe {
@@ -69,9 +68,8 @@ pub fn main() {
 
     let mut camera = camera::OrthoCamera::new(1024.0, 768.0);
 
-    let mut combined = Transform {
-        view: camera.view(),
-        projection: camera.projection(),
+    let mut transform = Transform {
+        combined: camera.combined(),
     };
 
     let (vertex_buffer, slice) = factory.create_vertex_buffer_with_slice(&TRIANGLE, ());
@@ -85,7 +83,7 @@ pub fn main() {
 
     let mut running = true;
     while running {
-        camera.translate(0.1, 0.1);
+        camera.translate(0.01, 0.01);
 
         // fetch events
         events_loop.poll_events(|glutin::Event::WindowEvent{window_id: _, event}| {
@@ -99,11 +97,10 @@ pub fn main() {
             }
         });
 
-        combined.view = camera.view();
-        combined.projection = camera.projection();
+        transform.combined = camera.combined();
 
         // Update constant buffesr
-        match encoder.update_buffer(&data.transform, &[combined], 0) {
+        match encoder.update_buffer(&data.transform, &[transform], 0) {
             Err(err) => {
                 println!("Error: {:?}", err);
             },
