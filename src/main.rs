@@ -83,7 +83,8 @@ pub fn main() {
 
     let mut running = true;
     while running {
-        camera.translate(0.01, 0.01);
+        camera.translate(0.001, 0.001);
+        camera.rotate(0.01);
 
         // fetch events
         events_loop.poll_events(|glutin::Event::WindowEvent{window_id: _, event}| {

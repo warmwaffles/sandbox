@@ -3,6 +3,7 @@ extern crate nalgebra;
 use self::nalgebra::Vector3;
 use self::nalgebra::Matrix4;
 use self::nalgebra::Orthographic3;
+use self::nalgebra::Rotation3;
 
 // SEE: https://github.com/MichaelShaw/rust-game-24h/blob/master/src/camera.rs
 // for more examples and what not for camera positioning.
@@ -14,6 +15,8 @@ pub struct OrthoCamera {
     zoom:     f32,
     near:     f32,
     far:      f32,
+    /// Camera twist in radians
+    rotation: f32,
     /// Pixels Per Unit
     ppu:      f32,
 }
@@ -27,7 +30,8 @@ impl OrthoCamera {
             zoom:     1.0,
             near:     -100.0,
             far:      100.0,
-            ppu:      256.0
+            ppu:      256.0,
+            rotation: 0.0
         }
     }
 
@@ -44,6 +48,14 @@ impl OrthoCamera {
     {
         self.position.x += dx;
         self.position.y += dy;
+    }
+
+    pub fn rotate(&mut self, rads: f32) {
+        self.rotation += rads;
+    }
+
+    pub fn set_rotation(&mut self, rad: f32) {
+        self.rotation = rad;
     }
 
     fn projection(&self) -> Matrix4<f32> {
@@ -66,11 +78,15 @@ impl OrthoCamera {
         ).unwrap()
     }
 
+    fn rotation(&self) -> Matrix4<f32> {
+        Rotation3::from_axis_angle(&Vector3::z_axis(), self.rotation).to_homogeneous()
+    }
+
     fn view(&self) -> Matrix4<f32> {
         Matrix4::new_translation(&self.position)
     }
 
     pub fn combined(&self) -> [[f32; 4]; 4] {
-        (self.projection() * self.view()).into()
+        (self.projection() * (self.view() * self.rotation())).into()
     }
 }
